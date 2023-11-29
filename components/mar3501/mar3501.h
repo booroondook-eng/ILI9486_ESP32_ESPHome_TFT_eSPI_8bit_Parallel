@@ -1,7 +1,7 @@
 #ifndef MAR3501
 #define MAR3501
 
-#include "/config/esphome/TFT_eSPI/TFT_eSPI.h"
+#include <TFT_eSPI.h>
 #include "esphome.h"
 
 #include "esphome/core/component.h"
