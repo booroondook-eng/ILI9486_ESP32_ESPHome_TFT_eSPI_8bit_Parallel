@@ -1,18 +1,9 @@
 esphome:
   name: test-ili9486
   friendly_name: test-ili9486
-  libraries:
-#    - SPI
-    - FS
-    - SPIFFS
-    - file:///config/esphome/TFT_eSPI
-#  includes: 
-#    - Setup9486_ILI9486_Parallel.h  
-#----------------------------------
 external_components:
-  - source:
-      type: local
-      path: esp32_esphome_ili9486_Parallel/components
+  - source: github://booroondook-eng/ILI9486_ESP32_ESPHome_TFT_eSPI_8bit_Parallel
+    components: [mar3501]
 esp32:
   board: wemos_d1_uno32
   framework:
@@ -23,64 +14,11 @@ ota:
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
-  manual_ip:
-    static_ip: 192.168.0.157
-    gateway: 192.168.0.1
-    subnet: 255.255.255.0
   ap:
-    ssid: "Test-Ili9486 Fallback Hotspot"
+    ssid: "Test-ILI9486 Fallback Hotspot"
     password: !secret wifi_password
 captive_portal:
-web_server:
 sensor:
-  - platform: homeassistant
-    id: aisle_temperature
-    entity_id: sensor.sensor_hub_aisle_temperature
-  - platform: homeassistant
-    id: bathroom_temperature
-    entity_id: sensor.sensor_hub_bathroom_temperature
-  - platform: homeassistant
-    id: boiler_water_temperature
-    entity_id: sensor.sensor_hub_boiler_water_temperature
-  - platform: homeassistant
-    id: heater_reverse_temperature
-    entity_id: sensor.sensor_hub_heater_reverse_temperature
-  - platform: homeassistant
-    id: heat_floor_reverse_temperature
-    entity_id: sensor.sensor_hub_heat_floor_reverse_temperature
-  - platform: homeassistant
-    id: water_pressure
-    entity_id: sensor.sensor_hub_heating_water_pressure
-  - platform: homeassistant
-    id: voltage_level
-    entity_id: sensor.sensor_hub_voltage_level
-  - platform: homeassistant
-    name: LoValue
-    id: lovalue
-    entity_id: input_number.water_pressure_rel_voltage_low
-  - platform: homeassistant
-    name: HiValue
-    id: hivalue
-    entity_id: input_number.water_pressure_rel_voltage_high
-  - platform: adc
-    pin: GPIO34
-    name: "Voltage Level"
-    id: voltage
-    attenuation: auto
-    unit_of_measurement: V
-    update_interval: 0.1s      
-    accuracy_decimals: 3
-  - platform: template
-    name: "Heating Water Pressure"
-    id: heating_water_pressure
-    device_class: "pressure"
-    state_class: "measurement"
-    update_interval: 15s      
-    unit_of_measurement: "bar"
-    accuracy_decimals: 2
-    lambda: return id(voltage).state;
-    filters:
-      - lambda: return (x - 0.5);
 time:
   - platform: homeassistant
     id: homeassistant_time
@@ -91,41 +29,6 @@ font:
   - file: "gfonts://Roboto"
     id: roboto22
     size: 22
-#  - file: "fonts/Roboto-Medium.ttf"
-#    id: font_roboto_medium15
-#    size: 15
-#    glyphs: |-
-#      !"%()+=,-_.:°0123456789АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧЩЬЫЪЭЮЯABCDEFGHIJKLMNOPQRSTUVWXYZ абвгдеёжзийклмнопрстуфхцчщьыъэюяabcdefghijklmnopqrstuvwxyz'éèàòùç/&ôœìïöñ
-#  - file: "fonts/Roboto-Medium.ttf"
-#    id: font_roboto_medium27
-#    size: 27
-#  - file: 'fonts/materialdesignicons-webfont.ttf'
-#    id: font_icons_small
-#    size: 15
-#    glyphs:
-#      - "\U000F10C2" # Temperature High
-#      - "\U000F10C3" # Temperature Low
-#      - "\U000F058E" #mdi-water-percent
-#      - "\U000F05A1" #mdi-weight
-#      - "\U000F0708" #mdi-react
-#      - "\U000F0438" #mdi-radiator
-#      - "\U000F07E4" # CO2
-#      - "\U000F054B" # umbrella      
-#      - "\U000F0592" # hail
-#      - "\U000F0593" # lightning
-#      - "\U000F067E" # lightning-rainy
-#      - "\U000F0597" # rainy
-#      - "\U000F0F36" # snowy
-#      - "\U000F0594" # clear-night
-#      - "\U000F0599" # sunny
-#      - "\U000F07CA" # fuel
-#      - "\U000F024A" # flower
-#      - "\U000F051F" # time-remaining
-#      - "\U000F140B" # Energy
-#      - "\U000F109F" # Coffee
-#      - "\U000F02E3" # Bed
-#      - "\U000F0531" # Tree
-#      - "\U000F0E5B" # 3D Printer
 color:
   - id: RED
     red: 100%
@@ -155,20 +58,23 @@ display:
   - platform: mar3501
     id: disp
     update_interval: 1s
-    # color_depth: 8
     rotation: 90
     user_build_flags:
-      # - USER_SETUP_LOADED=0
-      - ILI9486_DRIVER
-      # - INIT_SEQUENCE_3
-      # - CGRAM_OFFSET
-      # - TFT_RGB_ORDER=TFT_BGR
-      #- TFT_INVERSION_ON=1 
       - TFT_PARALLEL_8_BIT
-      - TFT_WIDTH=320
-      - TFT_HEIGHT=480
+      - ILI9486_DRIVER
+      - LOAD_GLCD=1 
+      - LOAD_FONT2=1 
+      - LOAD_FONT4=1 
+      - LOAD_FONT6=1 
+      - LOAD_FONT7=1 
+      - LOAD_FONT8=1 
+      - LOAD_GFXFF=1 
+      - SMOOTH_FONT=1
+      # - SPI_FREQUENCY=27000000
+      # - SPI_READ_FREQUENCY=20000000
+      # - SPI_TOUCH_FREQUENCY=2500000
       - TFT_CS=33
-      - TFT_DC=27 
+      - TFT_DC=15 
       - TFT_RST=32 
       - TFT_WR=4
       - TFT_RD=2 
@@ -180,43 +86,16 @@ display:
       - TFT_D5=16 
       - TFT_D6=27 
       - TFT_D7=14 
-      - LOAD_GLCD=1 
-      - LOAD_FONT2=1 
-      - LOAD_FONT4=1 
-      - LOAD_FONT6=1 
-      - LOAD_FONT7=1 
-      - LOAD_FONT8=1 
-      - LOAD_GFXFF=1 
-      - SMOOTH_FONT=1
-#      - TOUCH_CS=39
+      - USER_SETUP_LOADED=1
+      # - INIT_SEQUENCE_3
+      # - CGRAM_OFFSET
+      # - TFT_INVERSION_ON=1 
+      - TFT_WIDTH=320
+      - TFT_HEIGHT=480
     lambda: |-
       it.fill(BLACK);
       it.printf(it.get_width()/2,  12,   id(roboto22), Color(YELLOW), TextAlign::CENTER, id(homeassistant_time).now().strftime("%d.%m.%Y").c_str());
-      it.printf(it.get_width()/2, 40,   id(roboto30), Color(WHITE),  TextAlign::CENTER, id(homeassistant_time).now().strftime("%X").c_str());
-      it.printf(it.get_width()/2, 70,   id(roboto30), Color(GREEN),  TextAlign::CENTER, "ABCDEFGHIJKLM");
-      it.printf(it.get_width()/2, 100,   id(roboto30), Color(RED),  TextAlign::CENTER, "NOPQRSTUVWXYZ");
-    #  it.print (it.get_width()/2, 138,  id(font_roboto_medium15), Color(RED),    TextAlign::CENTER, "ДАТЧИКИ");
-    #  it.print ( 11, 149,               id(font_roboto_medium15), Color(WHITE),  TextAlign::LEFT, "Коридор");
-    #  it.printf(170, 149, id(font_roboto_medium15), Color(WHITE), id(aisle_temperature).state);
-    #  it.printf(155, 149,               id(font_icons_small),     Color(YELLOW), TextAlign::LEFT, "\U000F10C3");
-    #  it.print ( 11, 171,               id(font_roboto_medium15), Color(WHITE),  TextAlign::LEFT, "Санузел");
-    #  it.printf(170, 171,               id(font_roboto_medium15), Color(WHITE),  "%.1f °C", id(bathroom_temperature).state);
-    #  it.printf(155, 171,               id(font_icons_small),     Color(YELLOW), TextAlign::LEFT, "\U000F10C3");
-    #  it.print ( 11, 193,               id(font_roboto_medium15), Color(WHITE),  TextAlign::LEFT, "Бойлер");
-    #  it.printf(170, 193,               id(font_roboto_medium15), Color(WHITE),  "%.1f °C", id(boiler_water_temperature).state);
-    #  it.printf(155, 193,               id(font_icons_small),     Color(YELLOW), TextAlign::LEFT, "\U000F10C3");
-    #  it.print ( 11, 215,               id(font_roboto_medium15), Color(WHITE),  TextAlign::LEFT, "Обр.котла");
-    #  it.printf(170, 215,               id(font_roboto_medium15), Color(WHITE),  "%.1f °C", id(heater_reverse_temperature).state);
-    #  it.printf(155, 215,               id(font_icons_small),     Color(YELLOW), TextAlign::LEFT, "\U000F10C3");
-    #  it.print ( 11, 237,               id(font_roboto_medium15), Color(WHITE),  TextAlign::LEFT, "Обр.ТП");
-    #  it.printf(170, 237,               id(font_roboto_medium15), Color(WHITE),  "%.1f °C", id(heat_floor_reverse_temperature).state);
-    #  it.printf(155, 237,               id(font_icons_small),     Color(YELLOW), TextAlign::LEFT, "\U000F10C3");
-    #  it.print ( 11, 259,               id(font_roboto_medium15), Color(WHITE),  TextAlign::LEFT, "Давление");
-    #  it.printf(170, 259,               id(font_roboto_medium15), Color(WHITE),  TextAlign::LEFT, "%.1f bar", id(heating_water_pressure).state);
-    #  it.printf(155, 259,               id(font_icons_small),     Color(YELLOW), TextAlign::LEFT, "\U000F05A1");
-    #  it.print ( 11, 281,               id(font_roboto_medium15), Color(WHITE),  TextAlign::LEFT, "Напруга");
-    #  it.printf(170, 281,               id(font_roboto_medium15), Color(WHITE),  TextAlign::LEFT, "%.3f V", id(voltage).state);
-    #  it.printf(155, 281,               id(font_icons_small),     Color(YELLOW), TextAlign::LEFT, "\U000F140B");
-
-# platformio_options:
-#   build_flags: "-DUSER_SETUP_LOADED=1 -DRPI_ILI9486_DRIVER -DTOUCH_CS=21"
+      it.printf(it.get_width()/2,  40,   id(roboto30), Color(WHITE),  TextAlign::CENTER, id(homeassistant_time).now().strftime("%X").c_str());
+      it.printf(it.get_width()/2,  70,   id(roboto30), Color(RED),  TextAlign::CENTER, "RED red RED");
+      it.printf(it.get_width()/2, 100,   id(roboto30), Color(GREEN),  TextAlign::CENTER, "GREEN green GREEN");
+      it.printf(it.get_width()/2, 130,   id(roboto30), Color(BLUE),  TextAlign::CENTER, "BLUE blue BLUE");
